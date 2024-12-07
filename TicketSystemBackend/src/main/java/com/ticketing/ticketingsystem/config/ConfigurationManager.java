@@ -1,29 +1,32 @@
 package com.ticketing.ticketingsystem.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.File;
 import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/config")
+@CrossOrigin(origins = "http://localhost:4200")
+@Validated
 public class ConfigurationManager {
 
     private static final String CONFIG_JSON_FILE = "configuration.json";
+    private final ObjectMapper objectMapper;
 
-    // Method to save the configuration using JSON format with BufferedWriter
+    public ConfigurationManager(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @PostMapping
-    public ResponseEntity<String> saveConfigToJson(@RequestBody Configuration configuration) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(CONFIG_JSON_FILE))) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            gson.toJson(configuration, writer);
+    public ResponseEntity<String> saveConfigToJson(@Valid @RequestBody Configuration configuration) {
+        try {
+            // Write configuration to JSON file
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(CONFIG_JSON_FILE), configuration);
             return ResponseEntity.ok("Configuration saved as JSON successfully.");
         } catch (IOException e) {
             e.printStackTrace();

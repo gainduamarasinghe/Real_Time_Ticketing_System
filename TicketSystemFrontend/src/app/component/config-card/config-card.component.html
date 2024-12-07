@@ -3,23 +3,22 @@
     <h2>Configurations</h2>
   </div>
   <div class="card-body">
-<!--    (ngSubmit)="submitConfig()"-->
-    <form >
+    <form (ngSubmit)="submitConfiguration()">
       <div class="form-group">
         <label for="input1">Enter the total number of tickets:</label>
-        <input type="number" id="input1" [(ngModel)]="config.totalAvailableTickets" name="totalAvailableTickets" class="input-text" placeholder="Total number of tickets."/>
+        <input type="number" id="input1" [(ngModel)]="totalTickets" name="totalTickets" class="input-text" placeholder="Total number of tickets." required/>
       </div>
       <div class="form-group">
         <label for="input2">Enter the ticket release rate:</label>
-        <input type="number" id="input2" [(ngModel)]="config.ticketReleaseRate" name="ticketReleaseRate" class="input-text" placeholder="Ticket release rate" />
+        <input type="number" id="input2" [(ngModel)]="ticketReleaseRate" name="ticketReleaseRate" class="input-text" placeholder="Ticket release rate" required/>
       </div>
       <div class="form-group">
         <label for="input3">Enter the customer retrieval rate:</label>
-        <input type="number" id="input3" [(ngModel)]="config.customerRetrievalRate" name="customerRetrievalRate" class="input-text" placeholder="Customer retrieval rate"/>
+        <input type="number" id="input3" [(ngModel)]="customerRetrievalRate" name="customerRetrievalRate" class="input-text" placeholder="Customer retrieval rate" required/>
       </div>
       <div class="form-group">
         <label for="input4">Enter the maximum pool capacity:</label>
-        <input type="number" id="input4" [(ngModel)]="config.maximumPoolCapacity" name="maximumPoolCapacity" class="input-text" placeholder="Maximum pool capacity"/>
+        <input type="number" id="input4" [(ngModel)]="maxPoolCapacity" name="maxPoolCapacity" class="input-text" placeholder="Ticket pool capacity" required/>
       </div>
       <div class="form-group">
         <button type="submit" class="submit-button">Submit</button>

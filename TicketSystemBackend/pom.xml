@@ -73,12 +73,21 @@
         </dependency>
 
         <!-- Gson (to save and load configuration data in JSON format) -->
+<!--        <dependency>-->
+<!--            <groupId>com.google.code.gson</groupId>-->
+<!--            <artifactId>gson</artifactId>-->
+<!--            <version>2.10.1</version> &lt;!&ndash; Use the latest compatible version &ndash;&gt;-->
+<!--        </dependency>-->
+
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.10.1</version> <!-- Use the latest compatible version -->
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId> <!-- Support for Java 8 Time API -->
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-parameter-names</artifactId> <!-- Constructor-based deserialization -->
+        </dependency>
 
         <!-- Spring Boot Starter AOP (for logging purposes) -->
         <dependency>
