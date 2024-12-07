@@ -1,0 +1,12 @@
+.header{
+  background-color: #1e3855;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  font-family: Arial, sans-serif;
+}
+
+.header-title{
+  color: white;
+}

@@ -1,0 +1,50 @@
+.footer {
+  background-color: #1e3855;                  /* Dark background color */
+  padding: 40px 0;                         /* Spacing around the footer content */
+  color: #fff;                             /* White text color */
+  font-family: Arial, sans-serif;
+  text-align: center; /* Center all text */
+  border-radius: 16px;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;                          /* Center the footer container */
+}
+
+.social-icons {
+  margin-bottom: 20px;
+}
+
+.social-icons a {
+  color: #fff;                             /* White color for social icons */
+  text-decoration: none;
+  font-size: 24px;                         /* Size of social icons */
+  margin: 0 15px;                          /* Spacing between social icons */
+  transition: color 0.3s ease;             /* Smooth transition for hover effect */
+}
+
+.social-icons a:hover {
+  color: #00bcd4;                          /* Change icon color on hover */
+}
+
+.footer-links {
+  margin-bottom: 20px;
+}
+
+.footer-links p {
+  color: #ccc;                             /* Light gray color for footer links */
+  text-decoration: none;
+  margin: 0 15px;                          /* Spacing between footer links */
+  font-weight: normal;
+  transition: color 0.3s ease;
+}
+
+
+.footer-copyright {
+  font-size: 14px;
+}
+
+.designer-name {
+  color: #00bcd4;                          /* Highlight designer's name in a different color */
+}

@@ -1,0 +1,72 @@
+.card {
+  max-width: 500px;
+  margin: 20px;
+  padding: 30px;  /* Maintained a balanced padding for the card */
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #bed9ed;
+  font-family: Arial, sans-serif;
+}
+
+.card-header {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.8em;
+  color: #333;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px 0 0;  /* Added padding to the card body to create space around form elements */
+}
+
+.form-group {
+  margin-bottom: 20px;  /* Increased margin for spacing between form elements */
+}
+
+.input-text {
+  width: 100%;
+  padding: 12px;  /* Added sufficient padding inside the input fields */
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 1em;
+  margin-top: 10px; /* Added margin-top to create spacing between the label and the input field */
+}
+
+.submit-button {
+  background-color: #1e3855;
+  color: #fff;
+  padding: 14px;  /* Increased padding for better button size */
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px; /* Added margin-top to create space above the button */
+}
+
+.reset-button{
+  background-color: #1e3855;
+  color: #fff;
+  padding: 14px;  /* Increased padding for better button size */
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+.submit-button:hover {
+  background-color: #1c0a87;
+}
+
+.reset-button:hover {
+  background-color: #1c0a87;
+}

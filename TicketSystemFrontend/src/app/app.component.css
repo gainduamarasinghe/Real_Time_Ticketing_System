@@ -1,0 +1,26 @@
+.cards-container {
+  display: flex;                    /* Align cards in a row */
+  gap: 20px;                        /* Space between columns */
+  max-width: 1200px;
+  margin: 0 auto;                /* Center the container */
+}
+
+.config-card {
+  flex: 1;                          /* Configuration card takes more space */
+}
+
+.controller-logger-container {
+  display: flex;
+  flex-direction: column;           /* Stack items vertically */
+  gap: 10px;                        /* Space between the Controller and Logger cards */
+}
+
+.controller-display{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between ;
+
+}
+
+
+

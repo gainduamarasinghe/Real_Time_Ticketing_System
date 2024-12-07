@@ -1,0 +1,11 @@
+.graph-container {
+  width: 800px;                /* Set fixed width for the chart */
+  height: 500px;               /* Set fixed height for the chart */
+  margin: 20px auto;           /* Center the chart on the page */
+}
+
+canvas {
+  display: block;              /* Make sure the canvas is displayed as a block */
+  max-width: 100%;             /* Responsive width */
+  max-height: 100%;            /* Responsive height */
+}
