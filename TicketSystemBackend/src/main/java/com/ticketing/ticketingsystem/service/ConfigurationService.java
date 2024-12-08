@@ -5,6 +5,7 @@ import com.ticketing.ticketingsystem.config.Configuration;
 import com.ticketing.ticketingsystem.model.Customer;
 import com.ticketing.ticketingsystem.model.Vendor;
 import com.ticketing.ticketingsystem.ticketpool.TicketPool;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -16,11 +17,16 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class ConfigurationService {
 
+    private final SimpMessagingTemplate messagingTemplate;
     private TicketPool ticketPool;
     private ThreadPoolExecutor vendorExecutor;
     private ThreadPoolExecutor customerExecutor;
     private Configuration currentConfig;
     private boolean isRunning = false;
+
+    public ConfigurationService(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
 
     public void saveConfiguration(Configuration configuration) {
         this.currentConfig = configuration;
@@ -76,6 +82,7 @@ public class ConfigurationService {
                 if (ticketPool.shouldStop()) {
                     System.out.println("All tickets have been sold. Terminating the system...");
                     stopSimulation();
+                    messagingTemplate.convertAndSend("/topic/simulationStatus", "All tickets sold. Simulation stopped.");
                     break;
                 }
                 try {
@@ -88,7 +95,6 @@ public class ConfigurationService {
         }).start();
     }
 
-
     public void stopSimulation() {
         if (!isRunning) {
             System.out.println("Simulation is not running.");
@@ -96,25 +102,26 @@ public class ConfigurationService {
         }
 
         try {
-            vendorExecutor.shutdownNow();
-            customerExecutor.shutdownNow();
-
-            if (!vendorExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
-                System.err.println("Vendor threads did not terminate.");
+            if (vendorExecutor != null) {
+                vendorExecutor.shutdownNow(); // Attempt to stop vendor threads
+            }
+            if (customerExecutor != null) {
+                customerExecutor.shutdownNow(); // Attempt to stop customer threads
             }
 
-            if (!customerExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
-                System.err.println("Customer threads did not terminate.");
+            if (vendorExecutor != null) {
+                vendorExecutor.awaitTermination(5, TimeUnit.SECONDS);
+            }
+            if (customerExecutor != null) {
+                customerExecutor.awaitTermination(5, TimeUnit.SECONDS);
             }
 
-            System.out.println("Simulation stopped successfully.");
+            System.out.println("All threads have been stopped.");
+            messagingTemplate.convertAndSend("/topic/simulationStatus", "Simulation manually stopped.");
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.err.println("Simulation termination interrupted.");
+            System.err.println("Error stopping threads: " + e.getMessage());
         } finally {
             isRunning = false;
         }
     }
-
-
 }

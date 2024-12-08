@@ -5,6 +5,7 @@ import com.ticketing.ticketingsystem.config.Configuration;
 import com.ticketing.ticketingsystem.service.ConfigurationService;
 import com.ticketing.ticketingsystem.validation.InputValidation;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -16,11 +17,13 @@ import java.io.IOException;
 public class ConfigurationController {
     private final ConfigurationService configurationService;
     private final ObjectMapper objectMapper;
+    private final SimpMessagingTemplate messagingTemplate;
     private static final String CONFIG_JSON_FILE = "configuration.json";
 
-    public ConfigurationController(ConfigurationService configurationService, ObjectMapper objectMapper) {
+    public ConfigurationController(ConfigurationService configurationService, ObjectMapper objectMapper, SimpMessagingTemplate messagingTemplate) {
         this.configurationService = configurationService;
         this.objectMapper = objectMapper;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @PostMapping
@@ -34,6 +37,10 @@ public class ConfigurationController {
 
             // Write configuration to JSON file
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(CONFIG_JSON_FILE), configuration);
+
+            // Notify via WebSocket
+            messagingTemplate.convertAndSend("/topic/simulationStatus", "Configuration saved successfully.");
+
             return ResponseEntity.ok("Configuration saved as JSON successfully.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Validation error: " + e.getMessage());
@@ -46,9 +53,11 @@ public class ConfigurationController {
     public ResponseEntity<String> startSimulation() {
         try {
             configurationService.startSimulation();
-            return ResponseEntity.ok("Simulation started.");
+            // Notify clients via WebSocket
+            messagingTemplate.convertAndSend("/topic/simulationStatus", "Ticketing System started.");
+            return ResponseEntity.ok("Ticketing System started.");
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body("Error starting simulation: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error starting system: " + e.getMessage());
         }
     }
 
@@ -56,9 +65,11 @@ public class ConfigurationController {
     public ResponseEntity<String> stopSimulation() {
         try {
             configurationService.stopSimulation();
-            return ResponseEntity.ok("Simulation stopped.");
+            // Notify clients via WebSocket
+            messagingTemplate.convertAndSend("/topic/simulationStatus", "System stopped.");
+            return ResponseEntity.ok("System stopped.");
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body("Error stopping simulation: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error stopping system: " + e.getMessage());
         }
     }
 }

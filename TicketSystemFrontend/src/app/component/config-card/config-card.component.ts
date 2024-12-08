@@ -7,29 +7,36 @@ import {FormsModule} from '@angular/forms';
   selector: 'app-config-card',
   imports: [FormsModule],
   templateUrl: './config-card.component.html',
-  styleUrls: ['./config-card.component.css']
+  styleUrls: ['./config-card.component.css'],
 })
 export class ConfigCardComponent {
-  totalTickets!: number;
-  ticketReleaseRate!: number;
-  customerRetrievalRate!: number;
-  maxPoolCapacity!: number;
+  totalTickets: number = 0;
+  ticketReleaseRate: number = 0;
+  customerRetrievalRate: number = 0;
+  maxPoolCapacity: number = 0;
+
+  private apiUrl = 'http://localhost:8080/api/config';
 
   constructor(private http: HttpClient) {}
 
-  // Method to send configuration data to the backend
-  submitConfiguration() {
-    const config = {
+  submitConfiguration(): void {
+    const configuration = {
+      maxTicketCapacity: this.maxPoolCapacity,
       totalTickets: this.totalTickets,
       ticketReleaseRate: this.ticketReleaseRate,
       customerRetrievalRate: this.customerRetrievalRate,
-      maxPoolCapacity: this.maxPoolCapacity,
     };
 
-    this.http.post('http://localhost:8080/api/config', config)
-      .subscribe(
-        response => console.log('Configuration saved:', response),
-        error => console.error('Error saving configuration:', error)
-      );
+    this.http.post(`${this.apiUrl}`, configuration, { responseType: 'text' }).subscribe({
+      next: (response) => {
+        console.log('Response:', response);
+        alert('Configuration saved successfully.');
+      },
+      error: (err) => {
+        console.error('Error details:', err);
+        alert('Error saving configuration. Please try again.');
+      },
+    });
   }
+
 }
