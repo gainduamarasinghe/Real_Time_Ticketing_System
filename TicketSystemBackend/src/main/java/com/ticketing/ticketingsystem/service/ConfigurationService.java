@@ -9,25 +9,23 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ConfigurationService {
 
     private TicketPool ticketPool;
-    private ExecutorService vendorExecutor;
-    private ExecutorService customerExecutor;
+    private ThreadPoolExecutor vendorExecutor;
+    private ThreadPoolExecutor customerExecutor;
     private Configuration currentConfig;
     private boolean isRunning = false;
 
-    /**
-     * Saves the provided configuration to a JSON file and initializes the TicketPool.
-     */
     public void saveConfiguration(Configuration configuration) {
         this.currentConfig = configuration;
 
-        // Initialize TicketPool with the maximum ticket capacity and total tickets to sell
+        // Initialize TicketPool with maximum ticket capacity and total tickets
         this.ticketPool = new TicketPool(
                 configuration.getMaxTicketCapacity(),
                 configuration.getTotalTickets()
@@ -42,9 +40,6 @@ public class ConfigurationService {
         }
     }
 
-    /**
-     * Starts the ticketing simulation by initializing vendor and customer threads.
-     */
     public void startSimulation() {
         if (isRunning) {
             throw new IllegalStateException("Simulation already running");
@@ -57,37 +52,69 @@ public class ConfigurationService {
         isRunning = true;
 
         // Start vendors
-        vendorExecutor = Executors.newFixedThreadPool(10);
-        for (int i = 0; i < 10; i++) {
-            vendorExecutor.submit(() -> {
-                while (!Thread.currentThread().isInterrupted() && !ticketPool.allTicketsReleased()) {
-                    ticketPool.addTicket();
-                }
-            });
+        int numberOfVendors = 10;
+        vendorExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfVendors);
+
+        for (int i = 0; i < numberOfVendors; i++) {
+
+            Vendor vendor = new Vendor(currentConfig.getTotalTickets() / numberOfVendors, currentConfig.getTicketReleaseRate(), ticketPool);
+            vendorExecutor.submit(vendor); // Submit tasks to the thread pool
         }
 
         // Start customers
-        customerExecutor = Executors.newFixedThreadPool(5);
-        for (int i = 0; i < 5; i++) {
-            customerExecutor.submit(() -> {
-                while (!Thread.currentThread().isInterrupted() && !ticketPool.allTicketsSold()) {
-                    ticketPool.buyTicket();
-                }
-            });
+        int numberOfCustomers = 5;
+        customerExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfCustomers);
+
+        for (int i = 0; i < numberOfCustomers; i++) {
+            Customer customer = new Customer(ticketPool, currentConfig.getCustomerRetrievalRate(), currentConfig.getTotalTickets() / numberOfCustomers);
+            customerExecutor.submit(customer); // Submit tasks to the thread pool
         }
+
+        // Monitor the system to shut down when all tickets are sold
+        new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                if (ticketPool.shouldStop()) {
+                    System.out.println("All tickets have been sold. Terminating the system...");
+                    stopSimulation();
+                    break;
+                }
+                try {
+                    Thread.sleep(1000); // Check periodically
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }).start();
     }
 
-    /**
-     * Stops the simulation by shutting down all threads.
-     */
+
     public void stopSimulation() {
         if (!isRunning) {
-            throw new IllegalStateException("Simulation is not running");
+            System.out.println("Simulation is not running.");
+            return;
         }
 
-        // Shut down vendor and customer executors
-        vendorExecutor.shutdownNow();
-        customerExecutor.shutdownNow();
-        isRunning = false;
+        try {
+            vendorExecutor.shutdownNow();
+            customerExecutor.shutdownNow();
+
+            if (!vendorExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+                System.err.println("Vendor threads did not terminate.");
+            }
+
+            if (!customerExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+                System.err.println("Customer threads did not terminate.");
+            }
+
+            System.out.println("Simulation stopped successfully.");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("Simulation termination interrupted.");
+        } finally {
+            isRunning = false;
+        }
     }
+
+
 }

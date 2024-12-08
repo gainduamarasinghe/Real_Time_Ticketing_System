@@ -18,7 +18,6 @@ public class ConfigurationController {
     private final ObjectMapper objectMapper;
     private static final String CONFIG_JSON_FILE = "configuration.json";
 
-    // Single constructor to inject both dependencies
     public ConfigurationController(ConfigurationService configurationService, ObjectMapper objectMapper) {
         this.configurationService = configurationService;
         this.objectMapper = objectMapper;
@@ -29,6 +28,9 @@ public class ConfigurationController {
         try {
             // Validate the configuration
             InputValidation.validateConfiguration(configuration);
+
+            // Save configuration to service
+            configurationService.saveConfiguration(configuration);
 
             // Write configuration to JSON file
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(CONFIG_JSON_FILE), configuration);
@@ -42,14 +44,21 @@ public class ConfigurationController {
 
     @PostMapping("/start")
     public ResponseEntity<String> startSimulation() {
-        configurationService.startSimulation();
-        return ResponseEntity.ok("Simulation started.");
+        try {
+            configurationService.startSimulation();
+            return ResponseEntity.ok("Simulation started.");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body("Error starting simulation: " + e.getMessage());
+        }
     }
 
     @PostMapping("/stop")
     public ResponseEntity<String> stopSimulation() {
-        configurationService.stopSimulation();
-        return ResponseEntity.ok("Simulation stopped.");
+        try {
+            configurationService.stopSimulation();
+            return ResponseEntity.ok("Simulation stopped.");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body("Error stopping simulation: " + e.getMessage());
+        }
     }
 }
-
