@@ -1,9 +1,11 @@
 package com.ticketing.ticketingsystem.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ticketing.ticketingsystem.DTO.TicketInfo;
 import com.ticketing.ticketingsystem.config.Configuration;
 import com.ticketing.ticketingsystem.service.ConfigurationService;
 import com.ticketing.ticketingsystem.validation.InputValidation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import java.io.IOException;
 public class ConfigurationController {
     private final ConfigurationService configurationService;
     private final ObjectMapper objectMapper;
+    @Autowired
     private final SimpMessagingTemplate messagingTemplate;
     private static final String CONFIG_JSON_FILE = "configuration.json";
 
@@ -39,7 +42,7 @@ public class ConfigurationController {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(CONFIG_JSON_FILE), configuration);
 
             // Notify via WebSocket
-            messagingTemplate.convertAndSend("/topic/simulationStatus", "Configuration saved successfully.");
+            messagingTemplate.convertAndSend("/topic/simulationStatus", "Configuration saved as JSON successfully.");
 
             return ResponseEntity.ok("Configuration saved as JSON successfully.");
         } catch (IllegalArgumentException e) {
@@ -72,4 +75,12 @@ public class ConfigurationController {
             return ResponseEntity.badRequest().body("Error stopping system: " + e.getMessage());
         }
     }
+
+    TicketInfo ticketInfo = new TicketInfo();
+    @GetMapping("/info")
+    public ResponseEntity<String> getTicketCount() {
+        String ticketInfoString = ticketInfo.getTicketCount() + "/" + ticketInfo.getTotalTickets();
+        return ResponseEntity.ok(ticketInfoString);
+    }
+
 }

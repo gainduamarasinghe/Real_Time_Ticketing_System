@@ -1,7 +1,9 @@
 package com.ticketing.ticketingsystem.ticketpool;
 
+import com.ticketing.ticketingsystem.DTO.TicketInfo;
 import com.ticketing.ticketingsystem.model.Ticket;
 import com.ticketing.ticketingsystem.utils.Logger;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
@@ -23,6 +25,8 @@ public class TicketPool {
 
     private final ConcurrentHashMap<Thread, Integer> customerIdMap = new ConcurrentHashMap<>();
     private final AtomicInteger customerIdCounter = new AtomicInteger(1);
+
+    private TicketInfo ticketCount = new TicketInfo();
 
     public TicketPool(int maximumTicketCapacity, int totalTicketsToSell) {
         this.maximumTicketCapacity = maximumTicketCapacity;
@@ -58,9 +62,11 @@ public class TicketPool {
         ticketsQueue.add(ticket);
         totalTicketsReleased++;
         notifyAll(); // Notify waiting customers and vendors
+
         int vendorId = getVendorId();
-        System.out.println("Ticket added by Vendor-" + vendorId + " - current size is " + ticketsQueue.size());
-        Logger.log("Vendor-" + vendorId + " - current size is " + ticketsQueue.size());
+        String logMessage = "Ticket added by Vendor-" + vendorId + " - current size is " + ticketsQueue.size();
+        System.out.println(logMessage);
+        Logger.log(logMessage);
     }
 
     public synchronized Ticket buyTicket() {
@@ -78,9 +84,13 @@ public class TicketPool {
             Ticket ticket = ticketsQueue.poll();
             totalTicketsSold++;
             notifyAll(); // Notify vendor threads
+
             int customerId = getCustomerId();
-            System.out.println("Ticket bought by Customer-" + customerId + " - current size is " + ticketsQueue.size() + " - " + ticket);
-            Logger.log("Ticket bought by Customer-" + customerId + " - current size is " + ticketsQueue.size() + " - " + ticket);
+            String logMessage = "Ticket bought by Customer-" + customerId + " - current size is " + ticketsQueue.size() + " - " + ticket;
+            System.out.println(logMessage);
+            Logger.log(logMessage);
+            ticketCount.setTicketCount(totalTicketsSold);
+            ticketCount.setTotalTickets(totalTicketsToSell);
             return ticket;
         }
         return null; // No ticket available, or stop condition met
@@ -101,8 +111,8 @@ public class TicketPool {
     public int getVendorIdForThread() {
         return getVendorId(); // Call the private method to get the vendor ID
     }
+
     public int getCustomerIdForThread() {
         return getCustomerId(); // Call the private method to get the customer ID
     }
-
 }

@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -8,10 +8,10 @@ import { Client } from '@stomp/stompjs';
 export class WebSocketService {
   private stompClient: Client;
   private readonly socketUrl = 'http://localhost:8080/websocket'; // WebSocket endpoint
-  private readonly topic = '/topic/simulationStatus'; // WebSocket topic
+  private readonly ticketCounterTopic = '/topic/ticketCounter'; // WebSocket topic for ticket counter
 
   constructor() {
-    const socket = SockJS(this.socketUrl);
+    const socket = new SockJS(this.socketUrl);
     this.stompClient = new Client({
       webSocketFactory: () => socket as any,
       debug: (str) => console.log(str), // Logs WebSocket messages
@@ -19,26 +19,14 @@ export class WebSocketService {
     });
   }
 
-  connect(callback: (message: string) => void): void {
+  connect(callback: (counter: string) => void): void {
     this.stompClient.onConnect = () => {
       console.log('WebSocket connected');
-      this.stompClient.subscribe(this.topic, (message) => {
-        callback(message.body); // Pass the message body to the callback
+      this.stompClient.subscribe("/topic/ticketCounter", (message) => {
+        callback(message.body); // Pass the ticket counter to the callback
       });
     };
 
-    this.stompClient.onStompError = (frame) => {
-      console.error('Broker reported error: ', frame.headers['message']);
-    };
-
-    this.stompClient.activate(); // Replaces the `connect()` method
-  }
-
-  disconnect(): void {
-    if (this.stompClient && this.stompClient.active) {
-      this.stompClient.deactivate(); // Replaces the `disconnect()` method
-      console.log('WebSocket disconnected');
-    }
+    this.stompClient.activate(); // Activate the WebSocket connection
   }
 }
-
