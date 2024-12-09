@@ -16,7 +16,7 @@ export class ControllerCardComponent {
     this.http.post(`${this.apiUrl}/start`, {}, { responseType: 'text' }).subscribe({
       next: (response) => {
         console.log('Response:', response);
-        alert('System started successfully.');
+        // alert('System started successfully.');
       },
       error: (err) => {
         console.error('Error details:', err);

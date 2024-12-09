@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ticketing.ticketingsystem.DTO.TicketInfo;
 import com.ticketing.ticketingsystem.config.Configuration;
 import com.ticketing.ticketingsystem.service.ConfigurationService;
+import com.ticketing.ticketingsystem.utils.Logger;
 import com.ticketing.ticketingsystem.validation.InputValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -81,6 +82,23 @@ public class ConfigurationController {
     public ResponseEntity<String> getTicketCount() {
         String ticketInfoString = ticketInfo.getTicketCount() + "/" + ticketInfo.getTotalTickets();
         return ResponseEntity.ok(ticketInfoString);
+    }
+
+//    @GetMapping("/logs")
+//    public ResponseEntity<String> getLogs() {
+//        // Get the logs from the Logger class
+//        String logs = Logger.getLogs();
+//        if (logs.isEmpty()) {
+//            return ResponseEntity.noContent().build(); // Return 204 if no logs are available
+//        } else {
+//            return ResponseEntity.ok(logs); // Return the logs
+//        }
+//    }
+
+    @GetMapping("/logs")
+    public ResponseEntity<String> getLogs() {
+        String logs = Logger.getLogs();
+        return ResponseEntity.ok(logs);
     }
 
 }

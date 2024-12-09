@@ -3,7 +3,6 @@ package com.ticketing.ticketingsystem.ticketpool;
 import com.ticketing.ticketingsystem.DTO.TicketInfo;
 import com.ticketing.ticketingsystem.model.Ticket;
 import com.ticketing.ticketingsystem.utils.Logger;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
