@@ -16,7 +16,7 @@ import {Configuration, TicketService} from '../../services/web-socket.service';
 export class ConfigCardComponent {
   config: Configuration = {
     totalTickets: null,
-    maxPoolCapacity: null,
+    maxTicketCapacity: null,
     ticketReleaseRate: null,
     customerRetrievalRate: null,
   };

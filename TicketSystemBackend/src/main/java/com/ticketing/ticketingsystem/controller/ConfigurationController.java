@@ -85,16 +85,7 @@ public class ConfigurationController {
         return ResponseEntity.ok(ticketInfoString);
     }
 
-//    @GetMapping("/logs")
-//    public ResponseEntity<String> getLogs() {
-//        // Get the logs from the Logger class
-//        String logs = Logger.getLogs();
-//        if (logs.isEmpty()) {
-//            return ResponseEntity.noContent().build(); // Return 204 if no logs are available
-//        } else {
-//            return ResponseEntity.ok(logs); // Return the logs
-//        }
-//    }
+
 
     @GetMapping("/logs")
     public ResponseEntity<String> getLogs() {

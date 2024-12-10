@@ -4,7 +4,7 @@ import {config, Observable} from 'rxjs';
 
 export interface Configuration {
   totalTickets: number | null;
-  maxPoolCapacity: number | null;
+  maxTicketCapacity: number | null;
   ticketReleaseRate: number | null;
   customerRetrievalRate: number | null;
 }
@@ -17,8 +17,13 @@ export class TicketService {
   private baseUrl = 'http://localhost:8080/api/config';
 
   constructor(private http: HttpClient) {}
-  configureSystem(config: Configuration): Observable<any> {
-    return this.http.post(`${this.baseUrl}/configure`, config, { responseType: 'text' });
+  configureSystem(configuration: Configuration): Observable<any> {
+    return this.http.post(`${this.baseUrl}/configure`, configuration, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      responseType: 'text'
+    });
   }
 
   connectToWebSocket(): WebSocket {

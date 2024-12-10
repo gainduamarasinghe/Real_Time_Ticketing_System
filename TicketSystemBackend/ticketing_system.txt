@@ -1,1 +1,1 @@
-2024-12-10 23:53:03 - Ticket bought by Customer-5 - current size is 0 - Ticket is {ticketID=20, eventName='Simple Event', ticketPrice=1000, location='Maharagama'}
+2024-12-11 02:35:20 - Ticket bought by Customer-1 - current size is 0 - Ticket is {ticketID=10, eventName='Simple Event', ticketPrice=1000, location='Maharagama'}
