@@ -31,7 +31,7 @@ public class ConfigurationController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @PostMapping
+    @PostMapping("/configure")
     public ResponseEntity<String> saveConfigToJson(@RequestBody Configuration configuration) {
         try {
             // Validate the configuration

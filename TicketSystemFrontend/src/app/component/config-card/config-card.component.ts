@@ -1,42 +1,44 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {FormsModule} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { HeaderComponent } from '../header/header.component';
+
+import {Configuration, TicketService} from '../../services/web-socket.service';
 
 @Component({
-  standalone: true,
   selector: 'app-config-card',
-  imports: [FormsModule],
   templateUrl: './config-card.component.html',
   styleUrls: ['./config-card.component.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule, HttpClientModule],
 })
 export class ConfigCardComponent {
-  totalTickets: number = 0;
-  ticketReleaseRate: number = 0;
-  customerRetrievalRate: number = 0;
-  maxPoolCapacity: number = 0;
+  config: Configuration = {
+    totalTickets: null,
+    maxPoolCapacity: null,
+    ticketReleaseRate: null,
+    customerRetrievalRate: null,
+  };
+  logs: string[] = [];
 
-  private apiUrl = 'http://localhost:8080/api/config';
+  isLoading = false; // For showing loading state
 
-  constructor(private http: HttpClient) {}
+  constructor(private ticketService: TicketService) {}
+
 
   submitConfiguration(): void {
-    const configuration = {
-      maxTicketCapacity: this.maxPoolCapacity,
-      totalTickets: this.totalTickets,
-      ticketReleaseRate: this.ticketReleaseRate,
-      customerRetrievalRate: this.customerRetrievalRate,
-    };
-
-    this.http.post(`${this.apiUrl}`, configuration, { responseType: 'text' }).subscribe({
-      next: (response) => {
-        console.log('Response:', response);
-        alert('Configuration saved successfully.');
+    this.isLoading = true;
+    this.ticketService.configureSystem(this.config).subscribe({
+      next: () => {
+        alert('System configured successfully!');
+        this.isLoading = false;
       },
-      error: (err) => {
-        console.error('Error details:', err);
-        alert('Error saving configuration. Please try again.');
+      error: (error) => {
+        console.error('Error details:', error);
+        alert('Configuration failed: ' + error.message);
+        this.isLoading = false;
       },
     });
   }
-
 }
