@@ -5,7 +5,12 @@
   <div class="card-body">
     <div class="log-content">
       <!-- Loop through the logs array and display each log -->
-      <p *ngFor="let log of logs">{{ log }}</p>
+      <ul>
+        <li *ngFor="let update of liveUpdates">
+          {{ update }}
+        </li>
+      </ul>
+
     </div>
   </div>
 </div>

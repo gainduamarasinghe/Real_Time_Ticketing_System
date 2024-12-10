@@ -6,6 +6,7 @@ import com.ticketing.ticketingsystem.config.Configuration;
 import com.ticketing.ticketingsystem.service.ConfigurationService;
 import com.ticketing.ticketingsystem.utils.Logger;
 import com.ticketing.ticketingsystem.validation.InputValidation;
+import com.ticketing.ticketingsystem.websocket.ActivityWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -21,10 +22,10 @@ public class ConfigurationController {
     private final ConfigurationService configurationService;
     private final ObjectMapper objectMapper;
     @Autowired
-    private final SimpMessagingTemplate messagingTemplate;
+    private final ActivityWebSocketHandler messagingTemplate;
     private static final String CONFIG_JSON_FILE = "configuration.json";
 
-    public ConfigurationController(ConfigurationService configurationService, ObjectMapper objectMapper, SimpMessagingTemplate messagingTemplate) {
+    public ConfigurationController(ConfigurationService configurationService, ObjectMapper objectMapper, ActivityWebSocketHandler messagingTemplate) {
         this.configurationService = configurationService;
         this.objectMapper = objectMapper;
         this.messagingTemplate = messagingTemplate;
@@ -43,7 +44,7 @@ public class ConfigurationController {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(CONFIG_JSON_FILE), configuration);
 
             // Notify via WebSocket
-            messagingTemplate.convertAndSend("/topic/simulationStatus", "Configuration saved as JSON successfully.");
+            messagingTemplate.broadcastMessage("Configuration saved as JSON successfully.");
 
             return ResponseEntity.ok("Configuration saved as JSON successfully.");
         } catch (IllegalArgumentException e) {
@@ -58,7 +59,7 @@ public class ConfigurationController {
         try {
             configurationService.startSimulation();
             // Notify clients via WebSocket
-            messagingTemplate.convertAndSend("/topic/simulationStatus", "Ticketing System started.");
+            messagingTemplate.broadcastMessage("Ticketing System started.");
             return ResponseEntity.ok("Ticketing System started.");
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body("Error starting system: " + e.getMessage());
@@ -70,7 +71,7 @@ public class ConfigurationController {
         try {
             configurationService.stopSimulation();
             // Notify clients via WebSocket
-            messagingTemplate.convertAndSend("/topic/simulationStatus", "System stopped.");
+            messagingTemplate.broadcastMessage("System stopped.");
             return ResponseEntity.ok("System stopped.");
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body("Error stopping system: " + e.getMessage());

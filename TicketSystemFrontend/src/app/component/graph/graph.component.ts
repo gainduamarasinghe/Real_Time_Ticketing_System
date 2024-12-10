@@ -14,7 +14,7 @@ export class GraphComponent {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Aug'],
     datasets: [
       {
-        data: [10, 40, 30, 120, 30, 40, 10],
+        data: [10, 40, 30, 10, 20, 40, 10],
         label: 'Customer Retrieval Rete',
         borderColor: '#388e3c',
         backgroundColor: 'rgba(56, 142, 60, 0.1)',

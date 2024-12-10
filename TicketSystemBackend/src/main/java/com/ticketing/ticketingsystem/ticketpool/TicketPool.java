@@ -3,6 +3,7 @@ package com.ticketing.ticketingsystem.ticketpool;
 import com.ticketing.ticketingsystem.DTO.TicketInfo;
 import com.ticketing.ticketingsystem.model.Ticket;
 import com.ticketing.ticketingsystem.utils.Logger;
+import com.ticketing.ticketingsystem.websocket.ActivityWebSocketHandler;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
@@ -13,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TicketPool {
     private final int maximumTicketCapacity;
     private final int totalTicketsToSell;
+    private final ActivityWebSocketHandler webSocketController; // Injected WebSocketController
     private Queue<Ticket> ticketsQueue;
     private int ticketCounter = 1;
     private int totalTicketsReleased = 0;
@@ -27,10 +29,12 @@ public class TicketPool {
 
     private TicketInfo ticketCount = new TicketInfo();
 
-    public TicketPool(int maximumTicketCapacity, int totalTicketsToSell) {
+    // Constructor with WebSocketController
+    public TicketPool(int maximumTicketCapacity, int totalTicketsToSell, ActivityWebSocketHandler webSocketController) {
         this.maximumTicketCapacity = maximumTicketCapacity;
         this.totalTicketsToSell = totalTicketsToSell;
         this.ticketsQueue = new LinkedList<>();
+        this.webSocketController = webSocketController; // Set WebSocketController
     }
 
     // Get or assign a unique ID for vendors
@@ -66,6 +70,9 @@ public class TicketPool {
         String logMessage = "Ticket added by Vendor-" + vendorId + " - current size is " + ticketsQueue.size();
         System.out.println(logMessage);
         Logger.log(logMessage);
+
+        // Send log to frontend via WebSocket
+        webSocketController.broadcastMessage(logMessage);
     }
 
     public synchronized Ticket buyTicket() {
@@ -88,8 +95,16 @@ public class TicketPool {
             String logMessage = "Ticket bought by Customer-" + customerId + " - current size is " + ticketsQueue.size() + " - " + ticket;
             System.out.println(logMessage);
             Logger.log(logMessage);
+
+            // Update ticket count and send to frontend
             ticketCount.setTicketCount(totalTicketsSold);
             ticketCount.setTotalTickets(totalTicketsToSell);
+            webSocketController.broadcastMessage(logMessage);
+
+            // Send ticket counter update to frontend
+            String counterUpdate = totalTicketsSold + "/" + totalTicketsToSell;
+            webSocketController.broadcastMessage(counterUpdate);
+
             return ticket;
         }
         return null; // No ticket available, or stop condition met
