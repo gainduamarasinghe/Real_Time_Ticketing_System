@@ -87,10 +87,4 @@ public class ConfigurationController {
 
 
 
-    @GetMapping("/logs")
-    public ResponseEntity<String> getLogs() {
-        String logs = Logger.getLogs();
-        return ResponseEntity.ok(logs);
-    }
-
 }
