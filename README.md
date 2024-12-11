@@ -1,16 +1,16 @@
 # Project Name: Real-Time Ticketing System
 
-Welcome to the Real-Time Ticketing System repository! This project is designed to simulate and manage a ticketing system with real-time updates. It is divided into three main components:
+Welcome to the Real-Time Ticketing System repository!🚀 This project is designed to simulate and manage a ticketing system with real-time updates. It is divided into three main components:
 
 - **CLI**: Command-Line Interface for managing and monitoring the system.
 - **Frontend**: Angular application for user interaction.
 - **Backend**: Spring Boot application for business logic and API endpoints.
 
 ## Features
-- Real-time updates using WebSockets for log monitoring and ticket updates.
-- REST API for configuration and control of the ticketing system.
-- CLI support for monitoring and debugging.
-- Angular-based frontend for an intuitive user experience.
+- Real-time updates using WebSockets for log monitoring and ticket updates.💯
+- REST API for configuration and control of the ticketing system.📲
+- CLI support for monitoring and debugging.🐞
+- Angular-based frontend for an intuitive user experience.👥
 
 ---
 
@@ -29,8 +29,8 @@ Follow the steps below to clone and set up the repository:
 
 ### 1. Clone the Repository
 ```bash
-$ git clone https://github.com/your-username/real-time-ticketing-system.git
-$ cd real-time-ticketing-system
+$ git clone https://github.com/gainduamarasinghe/Real_Time_Ticketing_System.git
+$ cd Real_Time_Ticketing_System
 ```
 
 ---
@@ -40,7 +40,7 @@ The CLI allows you to interact with the system via the terminal.
 
 ### Steps to Run:
 ```bash
-$ cd CLI
+$ cd Real_Time_Ticketing_System
 $ javac Main.java
 $ java Main
 ```
