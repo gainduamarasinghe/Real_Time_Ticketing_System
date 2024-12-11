@@ -7,13 +7,13 @@
   background-color: #bed9ed;         /* White background */
   font-family: Arial, sans-serif;    /* Set font family */
   margin: 10px auto;                 /* Center card horizontally */
-  overflow: hidden;                  /* Hide overflow to maintain boundaries */
+  overflow: hidden;                  /* Prevent outer scrollbar */
 }
 
 /* Card Header Styles */
 .card-header {
   background-color: #1e3855;         /* Green background for header */
-  color: white;                       /* White text color */
+  color: white;                      /* White text color */
   padding: 10px;
   text-align: center;                /* Center text in header */
   border-top-left-radius: 16px;      /* Rounded corners to match card */
@@ -23,17 +23,22 @@
 /* Card Body Styles */
 .card-body {
   padding: 10px;
-  height: calc(100% - 50px);         /* Adjust height to leave space for header */
-  overflow: hidden;                  /* Hide overflow to prevent scrollbar */
+  height: 100%;                      /* Fill remaining height of the card */
+  overflow: hidden;                  /* Prevent outer scrollbars */
+  display: flex;                     /* Use flexbox for layout */
+  flex-direction: column;            /* Stack child elements vertically */
 }
 
 /* Log Content Styles */
 .log-content {
-  height: 100%;                      /* Fill card body */
+  flex: 1;                           /* Take up remaining space in .card-body */
   overflow-y: auto;                  /* Enable vertical scrolling */
   padding-right: 5px;                /* Space for scrollbar */
+  padding-bottom: 20px;              /* Increased bottom padding to prevent clipping */
+  margin-bottom: 5px;                /* Additional margin for safety */
   font-size: 14px;
   line-height: 1.5;                  /* Add space between log entries */
+  box-sizing: border-box;            /* Ensure padding doesn’t exceed dimensions */
 }
 
 /* Scrollbar Styling */
@@ -42,7 +47,7 @@
 }
 
 .log-content::-webkit-scrollbar-thumb {
-  background-color: #ffffff;            /* Light gray scrollbar */
+  background-color: #ffffff;         /* Light gray scrollbar */
   border-radius: 4px;
 }
 
