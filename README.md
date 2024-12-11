@@ -1,31 +1,34 @@
-# Real-Time Ticketing System
+# Project Name: Real-Time Ticketing System
 
-This repository contains a Real-Time Ticketing System built with three components: **CLI**, **Frontend**, and **Backend**. Each component is structured within its own folder to simplify development and deployment.
+Welcome to the Real-Time Ticketing System repository! This project is designed to simulate and manage a ticketing system with real-time updates. It is divided into three main components:
+
+- **CLI**: Command-Line Interface for managing and monitoring the system.
+- **Frontend**: Angular application for user interaction.
+- **Backend**: Spring Boot application for business logic and API endpoints.
 
 ## Features
-
-- **CLI**: Command-line interface to interact with the ticketing system.
-- **Frontend**: Angular-based web application for monitoring and managing the system.
-- **Backend**: Spring Boot application to handle core business logic and APIs, including WebSocket-based real-time updates.
+- Real-time updates using WebSockets for log monitoring and ticket updates.
+- REST API for configuration and control of the ticketing system.
+- CLI support for monitoring and debugging.
+- Angular-based frontend for an intuitive user experience.
 
 ---
 
 ## Prerequisites
+To get started, ensure you have the following installed on your system:
 
-To run the project, ensure the following are installed:
-
-- [Node.js](https://nodejs.org/) (for Frontend)
-- [Angular CLI](https://angular.io/cli) (for Frontend)
-- [Java Development Kit (JDK)](https://www.oracle.com/java/technologies/javase-downloads.html) 11 or later (for Backend)
-- [Maven](https://maven.apache.org/) (for Backend)
-- [Git](https://git-scm.com/) (for cloning the repository)
+- **Git**: To clone the repository.
+- **Node.js** and **npm**: For running the frontend.
+- **Java 17+**: For running the backend.
+- **Maven**: For building and running the Spring Boot application.
 
 ---
 
-## Clone the Repository
+## Getting Started
+Follow the steps below to clone and set up the repository:
 
-Use the following command to clone the repository:
-
+### 1. Clone the Repository
 ```bash
-git clone https://github.com/gainduamarasinghe/Real_Time_Ticketing_System.git
-cd real-time-ticketing-system
+$ git clone https://github.com/your-username/real-time-ticketing-system.git
+$ cd real-time-ticketing-system
+
