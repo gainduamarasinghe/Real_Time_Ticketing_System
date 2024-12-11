@@ -94,14 +94,5 @@ The backend is a Spring Boot application that handles the business logic and API
 - The backend API will be accessible at `http://localhost:8080/api`.
 - Ensure the frontend and backend are running simultaneously for full functionality.
 
----
-
-## Contributing
-If you'd like to contribute to this project, feel free to fork the repository and submit a pull request.
-
----
-
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
 
 
