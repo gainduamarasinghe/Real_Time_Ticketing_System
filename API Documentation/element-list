@@ -1,0 +1,9 @@
+com.ticketing.ticketingsystem
+com.ticketing.ticketingsystem.config
+com.ticketing.ticketingsystem.controller
+com.ticketing.ticketingsystem.model
+com.ticketing.ticketingsystem.service
+com.ticketing.ticketingsystem.ticketpool
+com.ticketing.ticketingsystem.utils
+com.ticketing.ticketingsystem.validation
+com.ticketing.ticketingsystem.websocket

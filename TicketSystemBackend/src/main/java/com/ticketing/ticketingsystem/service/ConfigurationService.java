@@ -14,20 +14,34 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Service class responsible for managing the configuration and simulation of the ticketing system.
+ * Handles the lifecycle of vendors and customers and manages the TicketPool.
+ */
 @Service
 public class ConfigurationService {
 
-    private final ActivityWebSocketHandler webSocketController; // Add WebSocketController
+    private final ActivityWebSocketHandler webSocketController;
     private TicketPool ticketPool;
     private ThreadPoolExecutor vendorExecutor;
     private ThreadPoolExecutor customerExecutor;
     private Configuration currentConfig;
     private boolean isRunning = false;
 
+    /**
+     * Constructs a ConfigurationService with the specified WebSocket controller.
+     *
+     * @param webSocketController the WebSocket controller used for broadcasting messages.
+     */
     public ConfigurationService(ActivityWebSocketHandler webSocketController) {
         this.webSocketController = webSocketController;
     }
 
+    /**
+     * Saves the configuration settings and initializes the TicketPool.
+     *
+     * @param configuration the configuration object containing system settings.
+     */
     public void saveConfiguration(Configuration configuration) {
         this.currentConfig = configuration;
 
@@ -45,9 +59,13 @@ public class ConfigurationService {
         } catch (IOException e) {
             throw new RuntimeException("Failed to save configuration", e);
         }
-
     }
 
+    /**
+     * Starts the ticketing simulation, initializing vendors and customers, and begins monitoring ticket sales.
+     *
+     * @throws IllegalStateException if the simulation is already running or if the configuration is not initialized.
+     */
     public void startSimulation() {
         if (isRunning) {
             throw new IllegalStateException("Simulation already running");
@@ -105,6 +123,9 @@ public class ConfigurationService {
         }).start();
     }
 
+    /**
+     * Stops the ticketing simulation by shutting down vendor and customer threads.
+     */
     public void stopSimulation() {
         if (!isRunning) {
             System.out.println("Simulation is not running.");

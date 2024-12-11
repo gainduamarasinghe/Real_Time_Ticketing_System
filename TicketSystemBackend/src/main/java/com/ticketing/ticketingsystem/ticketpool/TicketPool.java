@@ -10,6 +10,9 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Manages the pool of tickets in the ticketing system. Handles ticket addition and purchase, and ensures thread safety.
+ */
 public class TicketPool {
     private final int maximumTicketCapacity;
     private final int totalTicketsToSell;
@@ -26,9 +29,13 @@ public class TicketPool {
     private final ConcurrentHashMap<Thread, Integer> customerIdMap = new ConcurrentHashMap<>();
     private final AtomicInteger customerIdCounter = new AtomicInteger(1);
 
-
-
-    // Constructor with WebSocketController
+    /**
+     * Constructs a TicketPool instance with the specified maximum capacity, ticket count, and WebSocket handler.
+     *
+     * @param maximumTicketCapacity the maximum number of tickets the pool can hold.
+     * @param totalTicketsToSell    the total number of tickets available for sale.
+     * @param webSocketController   the WebSocket handler for broadcasting updates.
+     */
     public TicketPool(int maximumTicketCapacity, int totalTicketsToSell, ActivityWebSocketHandler webSocketController) {
         this.maximumTicketCapacity = maximumTicketCapacity;
         this.totalTicketsToSell = totalTicketsToSell;
@@ -36,16 +43,27 @@ public class TicketPool {
         this.webSocketController = webSocketController; // Set WebSocketController
     }
 
-    // Get or assign a unique ID for vendors
+    /**
+     * Gets or assigns a unique ID for the current vendor thread.
+     *
+     * @return the vendor ID for the current thread.
+     */
     private int getVendorId() {
         return vendorIdMap.computeIfAbsent(Thread.currentThread(), t -> vendorIdCounter.getAndIncrement());
     }
 
-    // Get or assign a unique ID for customers
+    /**
+     * Gets or assigns a unique ID for the current customer thread.
+     *
+     * @return the customer ID for the current thread.
+     */
     private int getCustomerId() {
         return customerIdMap.computeIfAbsent(Thread.currentThread(), t -> customerIdCounter.getAndIncrement());
     }
 
+    /**
+     * Adds a ticket to the pool. Waits if the pool is full or all tickets have been released.
+     */
     public synchronized void addTicket() {
         while (ticketsQueue.size() >= maximumTicketCapacity || totalTicketsReleased >= totalTicketsToSell) {
             if (totalTicketsReleased >= totalTicketsToSell) {
@@ -76,6 +94,11 @@ public class TicketPool {
         webSocketController.broadcastMessage(logMessage);
     }
 
+    /**
+     * Allows a customer to purchase a ticket. Waits if no tickets are available.
+     *
+     * @return the purchased Ticket, or null if no ticket is available.
+     */
     public synchronized Ticket buyTicket() {
         while (ticketsQueue.isEmpty() && totalTicketsSold < totalTicketsToSell) {
             try {
@@ -102,29 +125,54 @@ public class TicketPool {
 
             // Send ticket counter update to frontend
             String counterUpdate = totalTicketsSold + "/" + totalTicketsToSell;
-            webSocketController.broadcastMessage("Sold Ticket count: "+counterUpdate);
+            webSocketController.broadcastMessage("Sold Ticket count: " + counterUpdate);
 
             return ticket;
         }
         return null; // No ticket available, or stop condition met
     }
 
+    /**
+     * Checks if the simulation should stop. This happens when all tickets are released and sold.
+     *
+     * @return true if the simulation should stop, false otherwise.
+     */
     public synchronized boolean shouldStop() {
         return allTicketsReleased() && allTicketsSold();
     }
 
+    /**
+     * Checks if all tickets have been released.
+     *
+     * @return true if all tickets are released, false otherwise.
+     */
     public synchronized boolean allTicketsReleased() {
         return totalTicketsReleased >= totalTicketsToSell;
     }
 
+    /**
+     * Checks if all tickets have been sold.
+     *
+     * @return true if all tickets are sold, false otherwise.
+     */
     public synchronized boolean allTicketsSold() {
         return totalTicketsSold >= totalTicketsToSell;
     }
 
+    /**
+     * Gets the vendor ID for the current thread.
+     *
+     * @return the vendor ID.
+     */
     public int getVendorIdForThread() {
         return getVendorId(); // Call the private method to get the vendor ID
     }
 
+    /**
+     * Gets the customer ID for the current thread.
+     *
+     * @return the customer ID.
+     */
     public int getCustomerIdForThread() {
         return getCustomerId(); // Call the private method to get the customer ID
     }

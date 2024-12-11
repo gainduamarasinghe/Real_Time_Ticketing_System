@@ -2,8 +2,17 @@ package com.ticketing.ticketingsystem.validation;
 
 import com.ticketing.ticketingsystem.config.Configuration;
 
+/**
+ * Utility class for validating input configurations.
+ */
 public class InputValidation {
 
+    /**
+     * Validates the provided configuration for correctness.
+     *
+     * @param configuration the configuration to validate.
+     * @throws IllegalArgumentException if any validation rules are violated.
+     */
     public static void validateConfiguration(Configuration configuration) {
         if (configuration.getTotalTickets() <= 0) {
             throw new IllegalArgumentException("Total tickets must be a positive integer!");

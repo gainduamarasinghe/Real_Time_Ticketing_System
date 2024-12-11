@@ -1,43 +1,48 @@
 package com.ticketing.ticketingsystem.utils;
 
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Utility class for logging messages to a file.
+ */
 public class Logger {
     private static final String LOG_FILE = "ticketing_system.txt";
     private static BufferedWriter writer;
 
     static {
         try {
-            // Initialize the writer without append mode, to overwrite the log file each time
-            writer = new BufferedWriter(new FileWriter(LOG_FILE)); // No 'true' to avoid appending
-            // Register a shutdown hook to ensure the writer is closed properly
+            writer = new BufferedWriter(new FileWriter(LOG_FILE));
             Runtime.getRuntime().addShutdownHook(new Thread(Logger::close));
         } catch (IOException e) {
             System.err.println("Failed to initialize logger: " + e.getMessage());
         }
     }
 
-    // Synchronized method to log messages
+    /**
+     * Logs a message to the file with a timestamp.
+     *
+     * @param message the message to log.
+     */
     public static synchronized void log(String message) {
         try {
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            String logMessage = timestamp + " - " + message;
             if (writer != null) {
-                writer.write(logMessage);
+                writer.write(timestamp + " - " + message);
                 writer.newLine();
-                writer.flush(); // Ensure immediate write to the file
+                writer.flush();
             }
         } catch (IOException e) {
             System.err.println("Failed to write log: " + e.getMessage());
         }
     }
 
-    // Method to close the logger (e.g., when the program exits)
+    /**
+     * Closes the log writer to release resources.
+     */
     public static synchronized void close() {
         try {
             if (writer != null) {
