@@ -27,5 +27,5 @@ To run the project, ensure the following are installed:
 Use the following command to clone the repository:
 
 ```bash
-git clone https://github.com/your-username/real-time-ticketing-system.git
+git clone https://github.com/gainduamarasinghe/Real_Time_Ticketing_System.git
 cd real-time-ticketing-system
