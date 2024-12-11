@@ -1,15 +1,12 @@
 package com.ticketing.ticketingsystem.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ticketing.ticketingsystem.DTO.TicketInfo;
 import com.ticketing.ticketingsystem.config.Configuration;
 import com.ticketing.ticketingsystem.service.ConfigurationService;
-import com.ticketing.ticketingsystem.utils.Logger;
 import com.ticketing.ticketingsystem.validation.InputValidation;
 import com.ticketing.ticketingsystem.websocket.ActivityWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -77,14 +74,5 @@ public class ConfigurationController {
             return ResponseEntity.badRequest().body("Error stopping system: " + e.getMessage());
         }
     }
-
-    TicketInfo ticketInfo = new TicketInfo();
-    @GetMapping("/info")
-    public ResponseEntity<String> getTicketCount() {
-        String ticketInfoString = ticketInfo.getTicketCount() + "/" + ticketInfo.getTotalTickets();
-        return ResponseEntity.ok(ticketInfoString);
-    }
-
-
 
 }

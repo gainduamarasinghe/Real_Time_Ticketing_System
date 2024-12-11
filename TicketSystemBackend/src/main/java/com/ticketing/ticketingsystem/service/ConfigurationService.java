@@ -46,8 +46,6 @@ public class ConfigurationService {
             throw new RuntimeException("Failed to save configuration", e);
         }
 
-        // Notify frontend that configuration is saved
-        webSocketController.broadcastMessage("Configuration saved successfully.");
     }
 
     public void startSimulation() {

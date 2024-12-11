@@ -1,6 +1,5 @@
 package com.ticketing.ticketingsystem.ticketpool;
 
-import com.ticketing.ticketingsystem.DTO.TicketInfo;
 import com.ticketing.ticketingsystem.model.Ticket;
 import com.ticketing.ticketingsystem.utils.Logger;
 import com.ticketing.ticketingsystem.websocket.ActivityWebSocketHandler;
@@ -27,7 +26,7 @@ public class TicketPool {
     private final ConcurrentHashMap<Thread, Integer> customerIdMap = new ConcurrentHashMap<>();
     private final AtomicInteger customerIdCounter = new AtomicInteger(1);
 
-    private TicketInfo ticketCount = new TicketInfo();
+
 
     // Constructor with WebSocketController
     public TicketPool(int maximumTicketCapacity, int totalTicketsToSell, ActivityWebSocketHandler webSocketController) {
@@ -54,10 +53,12 @@ public class TicketPool {
             }
             try {
                 System.out.println("Waiting to add a ticket...");
+                webSocketController.broadcastMessage("Waiting to add a ticket...");
                 wait(); // Wait for space in the queue or more tickets to be sold
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Restore the interrupt flag
                 System.out.println("Ticket addition interrupted.");
+                webSocketController.broadcastMessage("Ticket addition interrupted.");
                 return; // Exit if interrupted
             }
         }
@@ -79,10 +80,12 @@ public class TicketPool {
         while (ticketsQueue.isEmpty() && totalTicketsSold < totalTicketsToSell) {
             try {
                 System.out.println("Customer waiting to buy...");
+                webSocketController.broadcastMessage("Customer waiting to buy...");
                 wait(); // Wait for a ticket to be available
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Restore the interrupt flag
                 System.out.println("Ticket purchase interrupted.");
+                webSocketController.broadcastMessage("Ticket purchase interrupted.");
                 return null; // Exit if interrupted
             }
         }
@@ -95,15 +98,11 @@ public class TicketPool {
             String logMessage = "Ticket bought by Customer-" + customerId + " - current size is " + ticketsQueue.size() + " - " + ticket;
             System.out.println(logMessage);
             Logger.log(logMessage);
-
-            // Update ticket count and send to frontend
-            ticketCount.setTicketCount(totalTicketsSold);
-            ticketCount.setTotalTickets(totalTicketsToSell);
             webSocketController.broadcastMessage(logMessage);
 
             // Send ticket counter update to frontend
             String counterUpdate = totalTicketsSold + "/" + totalTicketsToSell;
-            webSocketController.broadcastMessage(counterUpdate);
+            webSocketController.broadcastMessage("Sold Ticket count: "+counterUpdate);
 
             return ticket;
         }
